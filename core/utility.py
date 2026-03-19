@@ -57,7 +57,7 @@ def get_file_url(file_id: str) -> str | None:
             return f"https://api.telegram.org/file/bot{token}/{file_path}"
 
     except Exception as e:
-        print(f"❌ get_file_url error: {e}")
+        print(f"get_file_url error: {e}")
 
     return None
 
@@ -77,7 +77,7 @@ def fetch_and_decrypt(file_id: str) -> bytes | None:
         return decrypt_file(response.content)
 
     except Exception as e:
-        print(f"❌ fetch_and_decrypt error: {e}")
+        print(f"fetch_and_decrypt error: {e}")
         return None
 
 
@@ -91,5 +91,5 @@ def delete_local_file(file_field):
             os.remove(file_path)
             return True
     except Exception as e:
-        print(f"❌ File delete error: {e}")
+        print(f"File delete error: {e}")
     return False
