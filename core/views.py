@@ -1,8 +1,24 @@
-import imghdr
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404
 from .models import Gallery
 from . import utility
+
+
+def _detect_image_type(data: bytes) -> str:
+    """Detect image MIME type from magic bytes. Replaces removed imghdr module."""
+    if data[:8] == b'\x89PNG\r\n\x1a\n':
+        return 'png'
+    if data[:3] == b'\xff\xd8\xff':
+        return 'jpeg'
+    if data[:6] in (b'GIF87a', b'GIF89a'):
+        return 'gif'
+    if data[:4] == b'RIFF' and data[8:12] == b'WEBP':
+        return 'webp'
+    if data[:4] in (b'MM\x00*', b'II*\x00'):
+        return 'tiff'
+    if data[:4] == b'BM':
+        return 'bmp'
+    return 'jpeg'  # safe fallback
 
 
 def gallery_list(request):
@@ -46,7 +62,7 @@ def image_proxy(request, pk):        # ← stays as pk (int), used internally
     if raw_bytes is None:
         raise Http404("Could not decrypt image.")
 
-    image_type = imghdr.what(None, h=raw_bytes) or "jpeg"
+    image_type = _detect_image_type(raw_bytes)
     response = HttpResponse(raw_bytes, content_type=f"image/{image_type}")
     response["Cache-Control"] = "private, max-age=2700"
     return response
