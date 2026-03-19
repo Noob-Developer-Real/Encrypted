@@ -26,8 +26,8 @@ def gallery_list(request):
     gallery_data = []
     for photo in photos:
         gallery_data.append({
-            "id":    photo.pk,        # ← needed for image-proxy URL
-            "uuid":  photo.uuid,      # ← needed for gallery-detail URL
+            "id":    photo.pk,       
+            "uuid":  photo.uuid,      
             "title": photo.title or "Untitled",
             "about": photo.about or "",
         })
@@ -37,10 +37,10 @@ def gallery_list(request):
     })
 
 
-def gallery_detail(request, uuid):   # ← was 'pk', now matches URL <uuid:uuid>
+def gallery_detail(request, uuid):  
     photo = get_object_or_404(Gallery, uuid=uuid)
     data = {
-        "id":          photo.pk,      # ← needed for image-proxy URL
+        "id":          photo.pk,      
         "uuid":        photo.uuid,
         "title":       photo.title or "Untitled",
         "about":       photo.about or "",
@@ -51,7 +51,7 @@ def gallery_detail(request, uuid):   # ← was 'pk', now matches URL <uuid:uuid>
     return render(request, "gallery/gallery_detail.html", {"photo": data})
 
 
-def image_proxy(request, pk):        # ← stays as pk (int), used internally
+def image_proxy(request, pk):
     photo = get_object_or_404(Gallery, pk=pk)
 
     if not photo.file_id:
